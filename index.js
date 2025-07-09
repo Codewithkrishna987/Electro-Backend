@@ -1,24 +1,32 @@
-import express from 'express'
-import dotenv from 'dotenv'
+import express from "express"
+import dotenv from "dotenv"
+import productRoutes from "./routes/productRoutes"
+import cartRoutes from "./routes/productRoutes"
+import wishlistRoutes from "./routes/productRoutes"
 
-dotenv.config() ;
+dotenv.config();
 
-const app = express() ;
-const PORT = 4000 || process.env.PORT ;
+const app = express();
+const PORT = 4000 || process.env.PORT;
 
-// Middleware
-app.use(express.urlencoded({extended:true})) ;
-app.use(cors()) ;
-app.use(express.json()) ;
+//MIdderware 
+app.use(express.urlencoded({extended:true}));
+app.use(cors());
+app.use(express.json());
 connectDB() ;
 
-// Router
-app.use('/api/user',userRouter) ;
+//Router
 
-app.get('/' ,(req ,res) => {
-    res.send('Welcome to the Electro backend') ;
+app.use('/api/user', userRouter);
+
+app.get('/', (req, res) =>{
+    res.send("Welcome to Doorcart Backend");
 })
 
-app.listen(PORT , () => {
-    console.log(`App is listening on port ${PORT}`) ;
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/wishlist", wishlistRoutes)
+
+app.listen(PORT, () =>{
+    console.log(`App listing in the port ${PORT}`)
 })

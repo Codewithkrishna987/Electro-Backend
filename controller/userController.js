@@ -17,7 +17,8 @@ const createToken = (id) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   // Check if all fields are provided
-  if (!email || !password) {
+  try {
+    if (!email || !password) {
     return res.status(400).json({ error: "All fields are required" });
   }
   // Validate email format
@@ -35,10 +36,16 @@ const loginUser = async (req, res) => {
     return res.status(400).json({ error: "Password Incorrect please check" });
   }
   const token = createToken(user._id);
+  res.cookie('token', token, {httpOnly:true});
   return res
     .status(200)
-    .json({ message: "User logged in Successfully", token });
-};
+    .json({ message: "User logged in Successfully",userModel1:{ username: userModel1.username , email} });
+
+  } catch (error) {
+    res.status(500).json({error:error.message})
+  }
+
+}
 
 const registerUser = async (req, res) => {
   try {
@@ -84,6 +91,7 @@ const registerUser = async (req, res) => {
     });
     await user.save();
     const token = createToken(user._id);
+    res.cookoie('token', token,{httpOnly: true});
     res.status(201).json({ success: true, user: { username, email }, token });
   } catch (error) {
     console.error("Error in registerUser:", error);
@@ -91,4 +99,13 @@ const registerUser = async (req, res) => {
   }
 };
 
-export { loginUser, registerUser };
+const logoutUser = (req, res) =>{
+  res.clearcookie('token');
+  res.json({message: "LogOut Successful"});
+}
+
+export { loginUser, registerUser, logoutUser };
+
+
+
+
